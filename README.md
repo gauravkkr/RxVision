@@ -51,7 +51,7 @@ project-repo/
 
 ### Frontend Setup
    Clone the repository:
-   git clone https://github.com/your-repo/OCR-project.git<br>
+   git clone https://github.com/sumitsingh1011/RXvision
    cd OCR-project/frontend<br>
    See Frontend Readme for more details
 
