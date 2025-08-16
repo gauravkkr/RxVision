@@ -1,0 +1,83 @@
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { Gradient } from "./design/Services";
+
+const OutputPage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const location = useLocation();
+  const { text, annotatedImageFilename } = location.state || {
+    text: null,
+    annotatedImageFilename: null,
+  };
+
+  const handleCopy = () => {
+    if (text) {
+      navigator.clipboard.writeText(text.join("\n"));
+      alert("Text copied to clipboard!");
+    }
+  };
+
+  const handleDownload = () => {
+    if (text) {
+      const element = document.createElement("a");
+      const file = new Blob([text.join("\n")], { type: "text/plain" });
+      element.href = URL.createObjectURL(file);
+      element.download = "processed_text.txt";
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    }
+  };
+
+  return (
+    <div className="container mx-auto mt-10 p-4">
+      <h1 className="text-3xl font-bold mb-6">OCR Output</h1>
+      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold mb-2">Extracted Text:</h2>
+          <div className="bg-gray-100 p-4 rounded">
+            {text ? (
+              <pre className="whitespace-pre-wrap">{text.join("\n")}</pre>
+            ) : (
+              <p>
+                No text available. Please process a file from the input page.
+              </p>
+            )}
+          </div>
+        </div>
+        {annotatedImageFilename && (
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold mb-2">Annotated Image:</h2>
+            <img
+              src={`/static/results/${annotatedImageFilename}`}
+              alt="Annotated Image"
+              className="max-w-full h-auto"
+            />
+          </div>
+        )}
+        <div className="flex justify-end space-x-4">
+          <button
+            onClick={handleCopy}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            disabled={!text}
+          >
+            Copy Text
+          </button>
+          <button
+            onClick={handleDownload}
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            disabled={!text}
+          >
+            Download Text
+          </button>
+        </div>
+      </div>
+      <Gradient />
+    </div>
+  );
+};
+
+export default OutputPage;
