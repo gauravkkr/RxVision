@@ -1,0 +1,8 @@
+# Example requirements for handwriting recognition
+numpy
+matplotlib
+opencv-python
+scikit-learn
+tensorflow
+keras
+pillow
