@@ -31,7 +31,7 @@ project-repo/
 
 ### Frontend Setup
    Clone the repository:
-   git clone https://github.com/sumitsingh1011/RXvision
+   git clone https://github.com/gauravkkr/RxVision
    cd OCR-project/frontend<br>
    See Frontend Readme for more details
 
@@ -178,7 +178,7 @@ npm run dev
 ---
 
 ## Authors
-- [Your Name(s)]
+- Team CapsLock
 
 ---
 
