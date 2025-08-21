@@ -8,3 +8,4 @@
 #     img3.png
 #     img4.png
 #   ...
+ $env:KMP_DUPLICATE_LIB_OK="TRUE"; python app.py

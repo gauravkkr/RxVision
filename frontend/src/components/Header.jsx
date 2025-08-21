@@ -47,7 +47,7 @@ const Header = () => {
             alt=""
             className="pointer-events-none select-none"
           /> 
-          <p className="text-3xl">Ocrify</p>
+          <p className="text-3xl">RxVision</p>
         </a>
 
         <nav
@@ -103,7 +103,7 @@ const Header = () => {
 
             external
           >
-            Let's Ocrify
+            Let's RxVision
           </Button>
         </Link>
 

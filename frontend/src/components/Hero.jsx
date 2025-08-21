@@ -31,7 +31,7 @@ const Hero = () => {
         <div className="relative z-1 max-w-[62rem] mx-auto text-center mb-[4rem] md:mb-20 lg:mb-[6rem]">
           <h1 className="h1 mb-6">
             <div>
-              <SparklesText text="Ocrify" />
+              <SparklesText text="RxVision" />
             </div>
             <br />
             <Typewriter
@@ -52,7 +52,7 @@ const Hero = () => {
             Unleast the power of OCR to covert your images or document with{" "}
             <br />
             <span className="inline-block relative font-semibold">
-              Ocrify
+              RxVision
               <img
                 src={curve}
                 className="absolute top-full left-0 w-full xl:-mt-2 pointer-events-none select-none"

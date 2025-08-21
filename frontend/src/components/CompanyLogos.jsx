@@ -2,7 +2,7 @@ import { companyLogos } from "../constants";
 import { AnimatePresence, motion } from "framer-motion";
 import { CanvasRevealEffect } from "./canvas-reveal-effect";
 import React from "react";
-import { sabarni, arka, preety, herohiralal } from "../assets";
+import { sabarni, arka, preety,ritik, herohiralal } from "../assets";
 import { img } from "framer-motion/client";
 import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 
@@ -107,8 +107,8 @@ const CompanyLogos = ({ className }) => {
       <>
         <div className=" py-20 flex flex-col lg:flex-row items-center justify-center  w-full gap-4 mx-auto px-8">
           <Card
-            title="Sabarni Gayen"
-            sub="Backend Developer"
+            title="Rahul Goel"
+            sub="Cloud Engineer"
             icon={
               <img
                 src={sabarni} // Replace 'sabarni' with any of your imported images like 'arka', 'preety', or 'herohiralal'
@@ -125,8 +125,8 @@ const CompanyLogos = ({ className }) => {
             <div className="absolute inset-0 [mask-image:radial-gradient(400px_at_center,white,transparent)] bg-black/50 dark:bg-black/90" />
           </Card>
           <Card
-            title="Arkyaprabha Sengupta"
-            sub="ML Developer"
+            title="Gaurav Kumar"
+            sub="Data Scientist / ML Developer"
             icon={
               <img
                 src={arka} // Replace 'sabarni' with any of your imported images like 'arka', 'preety', or 'herohiralal'
@@ -150,8 +150,27 @@ const CompanyLogos = ({ className }) => {
           </Card>
 
           <Card
-            title="Preety Datta"
-            sub="Cloud Engineer"
+            title="Ritik Jha"
+            sub="Frontend Developer"
+            icon={
+              <img
+                src={ritik} // Replace 'sabarni' with any of your imported images like 'arka', 'preety', or 'herohiralal'
+                alt="Icon" // Add a descriptive alt text for accessibility
+                // style={{ width: "", height: "24px" }} // Adjust the size to fit your needs
+                className="rounded-full"
+              />
+            }
+          >
+            <CanvasRevealEffect
+              animationSpeed={3}
+              containerClassName="bg-black"
+              colors={[[125, 211, 252]]}
+            />
+            <div className="absolute inset-0 [mask-image:radial-gradient(400px_at_center,white,transparent)] bg-black/50 dark:bg-black/90" />
+          </Card>
+          <Card
+            title="Sumit Singh"
+            sub="Backend Developer"
             icon={
               <img
                 src={preety} // Replace 'sabarni' with any of your imported images like 'arka', 'preety', or 'herohiralal'
@@ -169,8 +188,8 @@ const CompanyLogos = ({ className }) => {
             <div className="absolute inset-0 [mask-image:radial-gradient(400px_at_center,white,transparent)] bg-black/50 dark:bg-black/90" />
           </Card>
           <Card
-            title="Soumalya Mukhopadhyay"
-            sub="Frontend Developer"
+            title="Sneha Raj"
+            sub="UI/UX Designer / GitHub"
             icon={
               <img
                 src={herohiralal} // Replace 'sabarni' with any of your imported images like 'arka', 'preety', or 'herohiralal'

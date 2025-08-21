@@ -5,27 +5,10 @@
   This project uses React.js for the frontend, Flask for the backend, and machine learning for handwritten character recognition. Uses MNIST Dataset for training</h3>
 
 ## Table of Contents
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Project Structure](#project-structure)
-- [Setup and Installation](#setup-and-installation)
-- [Usage](#usage)
-- [Contribution Guidelines](#contribution-guidelines)
-- [Team](#team)
 
 ## Features
-- Recognizes handwritten digits using a trained machine learning model.
-- Converts handwritten notes into digital text.
-- User-friendly web interface for uploading and viewing notes.
-- RESTful API for backend communication.
-- Cloud deployment using AWS.
   
 ## Technologies Used
-- **Frontend:** React.js
-- **Backend:** Flask (Python)
-- **Machine Learning:** TensorFlow, Keras
-- **Cloud:** AWS S3, AWS EC2, AWS Lambda
-- **Version Control:** Git, GitHub
    ### Project Structure
 project-repo/
 ├── frontend/         # Contains React.js frontend code
@@ -45,9 +28,6 @@ project-repo/
 ## Setup and Installation
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/)
-- [Python](https://www.python.org/) and [pip](https://pip.pypa.io/en/stable/)
-- [Git](https://git-scm.com/)
 
 ### Frontend Setup
    Clone the repository:
@@ -78,13 +58,129 @@ Start the Flask API:
    - **Machine Learning:** The pre-trained model is used to predict handwritten digits and convert notes.
 
 ## Team
-- **Frontend Developer:** 
-- **Backend Developer:** 
-- **Data Scientist:** 
-- **Cloud/Git Developer:** 
   
    ### Acknowledgements
-- [React](https://reactjs.org/) - Frontend framework
-- [Flask](https://flask.palletsprojects.com/) - Backend framework
-- [TensorFlow](https://www.tensorflow.org/) - Machine learning library
-- Special thanks to our mentors and collaborators.
+RXvision
+
+A full-stack Handwriting Recognition and OCR web application.
+
+---
+
+## Tech Stack
+
+- **Frontend:** React (Vite, Tailwind CSS)
+- **Backend:** Python (Flask, EasyOCR, OpenCV)
+- **Other:** PowerShell (for build automation), CORS, REST API
+
+---
+
+## Project Structure
+
+```
+RXvision/
+│
+├── backend/
+│   ├── model/                # ML/AI model code
+│   │   ├── __init__.py
+│   │   └── model.py
+│   ├── src/
+│   │   ├── api.py            # Flask API endpoints
+│   │   ├── app.py            # Flask app entrypoint
+│   │   └── requirements.txt  # Python dependencies
+│   └── static/
+│       ├── results/          # OCR results (images/text)
+│       └── uploads/          # Uploaded images
+│
+├── frontend/
+│   ├── src/                  # React source code
+│   ├── public/               # Static assets
+│   ├── dist/                 # Production build output (after build)
+│   ├── package.json          # Frontend dependencies
+│   └── vite.config.js        # Vite config (with API proxy)
+│
+├── copy-frontend-build.ps1   # Script to copy frontend build to backend static
+├── README.md                 # This file
+└── ...
+```
+
+---
+
+## Setup & Installation
+
+### 1. Clone the repository
+```
+git clone <repo-url>
+cd RXvision
+```
+
+### 2. Backend Setup (Python)
+- Install Python 3.8+
+- Install dependencies:
+```
+cd backend/src
+pip install -r requirements.txt
+```
+
+### 3. Frontend Setup (React)
+- Install Node.js (v16+ recommended)
+- Install dependencies:
+```
+cd ../../frontend
+npm install
+```
+
+---
+
+## How to Run
+
+### 1. Start the Backend (Flask)
+```
+cd backend/src
+python app.py
+```
+- The backend will run at http://localhost:8080
+
+### 2. Build and Deploy the Frontend
+- Make your changes in `frontend/src`.
+- Build the frontend:
+```
+cd ../../frontend
+npm run build
+```
+- Copy the build to the backend static folder:
+```
+cd ..
+powershell -ExecutionPolicy Bypass -File copy-frontend-build.ps1
+```
+
+### 3. Access the App
+- Open http://localhost:8080 in your browser. The backend will serve the latest frontend build.
+
+---
+
+## Development Tips
+- For live frontend development, use:
+```
+cd frontend
+npm run dev
+```
+- API requests from the dev server are proxied to Flask (see `vite.config.js`).
+- Always rebuild and copy the frontend build before deploying or testing with Flask.
+
+---
+
+## Troubleshooting
+- If frontend changes do not appear, ensure you:
+   1. Run `npm run build` in `frontend`
+   2. Run the PowerShell script to copy the build
+- If you get CORS errors, check the Flask CORS config and Vite proxy settings.
+
+---
+
+## Authors
+- [Your Name(s)]
+
+---
+
+## License
+[MIT] or your preferred license.

@@ -29,8 +29,8 @@ const Pricing = () => {
         </div>
 
         <Heading
-          tag="Get started with Ocrify"
-          title="Subscriptions as easy as Ocrify"
+          tag="Get started with RxVision"
+          title="Subscriptions as easy as RxVision"
         />
 
         <div className="relative">

@@ -84,10 +84,11 @@ import instagram from "./socials/instagram.svg";
 import telegram from "./socials/telegram.svg";
 import twitter from "./socials/twitter.svg";
 
-import sabarni from "./sabarni.png";
-import arka from "./arkyaprabha.png";
-import preety from "./preety.png";
-import herohiralal from "./herohiralal.png";
+import sabarni from "./sabarni.jpg";
+import arka from "./arkyaprabha.jpg";
+import preety from "./preety.jpg";
+import ritik from "./ritik.jpg";
+import herohiralal from "./herohiralal.jpg";
 import logo from "./logo.png";
 
 export {
@@ -96,6 +97,7 @@ export {
   sabarni,
   arka,
   preety,
+  ritik,
   compareresult,
   compareimage,
   noun1,

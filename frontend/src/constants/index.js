@@ -41,6 +41,7 @@ import {
   sabarni,
   arka,
   preety,
+  ritik,
   herohiralal,
 } from "../assets";
 import { links } from "../config";
@@ -80,7 +81,7 @@ export const navigation = [
   },
   {
     id: "6",
-    title: "Let's Ocrify",
+    title: "Let's RxVision",
     url: "/input",
     onlyMobile: true,
     external: true,
@@ -92,7 +93,7 @@ export const heroIcons = [noun1, noun2, noun3, noun4];
 
 export const notificationImages = [notification4, notification3, notification2];
 
-export const companyLogos = [sabarni, arka, preety, herohiralal];
+export const companyLogos = [sabarni, arka, preety,ritik, herohiralal];
 
 export const brainwaveServices = [
   "Photo generating",
