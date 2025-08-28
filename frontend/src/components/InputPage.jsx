@@ -53,7 +53,7 @@ const InputPage = () => {
         const formData = new FormData();
         formData.append("file", file);
 
-        const response = await fetch("/api/imageupload", {
+        const response = await fetch("http://127.0.0.1:8080/api/imageupload", {
           method: "POST",
           body: formData,
         });
@@ -63,10 +63,15 @@ const InputPage = () => {
         }
 
         const result = await response.json();
+        console.log("[DEBUG] Full API response:", result);
+        console.log("[DEBUG] guessed_medicines:", result.guessed_medicines);
+        console.log("[DEBUG] extracted text:", result.text);
+        
         navigate("/output", {
           state: {
             text: result.text,
             annotatedImageFilename: result.annotated_image,
+            guessed_medicines: result.guessed_medicines,
           },
         });
       } catch (error) {

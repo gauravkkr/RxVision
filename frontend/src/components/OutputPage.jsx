@@ -1,44 +1,30 @@
-import React, { useEffect, useState } from "react";
+
+import React from "react";
+import { useLocation } from "react-router-dom";
 import { Gradient } from "./design/Services";
 import HyperText from "./hyper-text";
 
+
 const OutputPage = () => {
-  const [text, setText] = useState(null);
-  const [annotatedImageFilename, setAnnotatedImageFilename] = useState(null);
+  const location = useLocation();
+  const text = location.state?.text || [];
+  const annotatedImageFilename = location.state?.annotatedImageFilename || null;
+  const guessedMedicines = location.state?.guessed_medicines || [];
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Debug logging
+  console.log("[DEBUG OutputPage] Full location.state:", location.state);
+  console.log("[DEBUG OutputPage] text:", text);
+  console.log("[DEBUG OutputPage] guessedMedicines:", guessedMedicines);
 
-  useEffect(() => {
-    const fetchText = async () => {
-      try {
-        // const response = await fetch('/static/results/result.txt');
-        const response = await fetch(
-          "http://localhost:8080/results/result.txt"
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const textContent = await response.text();
-        setText(textContent.split("\n")); // Assuming you want to split the text by lines
-      } catch (error) {
-        console.error("Failed to fetch text file:", error);
-      }
-    };
-
-    fetchText();
-  }, []);
   const handleCopy = () => {
-    if (text) {
+    if (text && text.length > 0) {
       navigator.clipboard.writeText(text.join("\n"));
       alert("Text copied to clipboard!");
     }
   };
 
   const handleDownload = () => {
-    if (text) {
+    if (text && text.length > 0) {
       const element = document.createElement("a");
       const file = new Blob([text.join("\n")], { type: "text/plain" });
       element.href = URL.createObjectURL(file);
@@ -48,24 +34,42 @@ const OutputPage = () => {
       document.body.removeChild(element);
     }
   };
+
   return (
     <div className="container mx-auto mt-10 p-4">
-      {/* <h1 className="text-3xl font-bold mb-6 text-center">OCR Output</h1> */}
-
       <HyperText
         className="text-4xl font-bold text-black  dark:text-white"
         text="OCR Output"
       />
       <div className=" bg-black border-solid border-purple-700 border-4 shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 ">
+        {/* Guessed Medicines Section - Show match method and medicine name */}
         <div className="mb-4">
-          <h2 className="text-xl font-semibold mb-2 pb-5">Extracted Text:</h2>
-          <div className="bg-black border-solid border-purple-700 border-4 p-4 rounded">
-            {text ? (
-              <pre className="whitespace-pre-wrap">{text.join("\n")}</pre>
+          <h2 className="text-2xl font-bold mb-4 text-green-500">Detected Medicine Name(s):</h2>
+          <div className="bg-black border-solid border-green-700 border-4 p-6 rounded flex flex-col items-center">
+            {guessedMedicines && guessedMedicines.length > 0 ? (
+              guessedMedicines.map((item, idx) => (
+                <div key={idx} className="text-green-300 text-3xl font-extrabold mb-2">
+                  {item.guess} (from: "{item.input}" - {item.method})
+                </div>
+              ))
             ) : (
-              <p>
-                No text available. Please ensure the text file is accessible.
-              </p>
+              <p className="text-white">No medicine detected. Please check your input.</p>
+            )}
+          </div>
+        </div>
+        
+        {/* Extracted Text Section for debugging */}
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold mb-4 text-blue-500">Extracted Text:</h2>
+          <div className="bg-black border-solid border-blue-700 border-4 p-6 rounded">
+            {text && text.length > 0 ? (
+              text.map((line, idx) => (
+                <div key={idx} className="text-blue-300 text-lg mb-1">
+                  "{line}"
+                </div>
+              ))
+            ) : (
+              <p className="text-white">No text extracted.</p>
             )}
           </div>
         </div>
@@ -73,49 +77,13 @@ const OutputPage = () => {
           <div className="mb-4">
             <h2 className="text-xl font-semibold mb-2">Annotated Image:</h2>
             <img
-              //src={`/static/results/${annotatedImageFilename}`}
               src={`http://localhost:8080/static/results/annotated_${annotatedImageFilename}`}
               alt="Annotated Image"
               className="max-w-full h-auto"
             />
           </div>
-        )}{" "}
-        <div className="flex justify-end space-x-4">
-          {/* <button
-            onClick={handleCopy}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            disabled={!text}
-          >
-            Copy Text
-          </button> */}
-          <button
-            onClick={handleCopy}
-            className="p-[3px] relative "
-            disabled={!text}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
-            <div className="px-8 py-2  bg-black rounded-[6px]  relative group transition duration-200 text-white hover:bg-transparent">
-              Copy Text
-            </div>
-          </button>
-          {/* <button
-            onClick={handleDownload}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-            disabled={!text}
-          >
-            Download Text
-          </button> */}
-          <button
-            onClick={handleDownload}
-            className="p-[3px] relative"
-            disabled={!text}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
-            <div className="px-8 py-2  bg-black rounded-[6px]  relative group transition duration-200 text-white hover:bg-transparent">
-              Download Button
-            </div>
-          </button>
-        </div>
+        )}
+  {/* Removed extracted text copy/download buttons. Only medicine name output and annotated image are shown. */}
       </div>
       <Gradient />
     </div>
