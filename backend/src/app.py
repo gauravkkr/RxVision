@@ -1,9 +1,9 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory,abort
 import os
 from flask_cors import CORS
 from api import api_bp  # Import the API blueprint
 
-app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__),'..','..', 'frontend', 'dist'), static_url_path='/')
+#app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__),'..','..', 'frontend', 'dist'), static_url_path='/')
 
 # #print("Static folder path:", os.path.join(os.path.dirname(__file__),'..', '..', 'frontend', 'dist'))
 # # @app.route('/', defaults={'path': ''})
@@ -14,10 +14,7 @@ app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__),'..',
 
 
 # Cleaned up Flask app for RXvision backend
-from flask import Flask, send_from_directory, abort
-import os
-from flask_cors import CORS
-from api import api_bp
+
 
 app = Flask(
     __name__,
@@ -57,6 +54,9 @@ CORS(app, resources={r"/api/*": {"origins": "*"}, r"/results/*": {"origins": "*"
 
 # Register the API blueprint
 app.register_blueprint(api_bp, url_prefix='/api')
+
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=8080)

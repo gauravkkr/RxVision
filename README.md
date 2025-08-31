@@ -31,7 +31,7 @@ project-repo/
 
 ### Frontend Setup
    Clone the repository:
-   git clone https://github.com/sumitsingh1011/RXvision
+   git clone https://github.com/gauravkkr/RxVision
    cd OCR-project/frontend<br>
    See Frontend Readme for more details
 
@@ -109,7 +109,7 @@ RXvision/
 
 ### 1. Clone the repository
 ```
-git clone <repo-url>
+git clone <https://github.com/gauravkkr/RxVision>
 cd RXvision
 ```
 
@@ -162,6 +162,7 @@ powershell -ExecutionPolicy Bypass -File copy-frontend-build.ps1
 - For live frontend development, use:
 ```
 cd frontend
+npm install
 npm run dev
 ```
 - API requests from the dev server are proxied to Flask (see `vite.config.js`).
@@ -178,7 +179,7 @@ npm run dev
 ---
 
 ## Authors
-- [Your Name(s)]
+- Team RxVision
 
 ---
 
