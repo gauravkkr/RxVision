@@ -43,67 +43,32 @@ def process_image(file):
         result_file.write("\n".join(extracted_text))
     
     # Fuzzy match each extracted text line to medicine names
-
-
-    # Simple substring match: for each extracted line, find first medicine name containing at least 3 consecutive letters from the line
     print("[DEBUG] Extracted text:", extracted_text)
     guessed_medicines = []
     from rapidfuzz import process as fuzzy_process
     for line in extracted_text:
         clean_line = line.lower().strip()
-        
-        # Skip very short lines (less than 2 characters)
-        if len(clean_line) < 2:
+        if len(clean_line) < 3:
             continue
-            
-        # Try direct prefix match (prioritize 2-letter for better OCR matching)
-        prefix2 = clean_line[:2]
-        prefix3 = clean_line[:3] if len(clean_line) >= 3 else clean_line
-        direct_match = None
-        
-        # First try 2-letter prefix (more reliable for partial OCR)
+        from rapidfuzz import fuzz
+        best_match = None
+        best_score = 0
         for med in MEDICINE_LIST:
-            med_lower = med.lower()
-            if med_lower.startswith(prefix2):
-                direct_match = med
-                print(f"[DEBUG] Direct prefix matched '{line}' to '{med}' (2-letter)")
-                guessed_medicines.append({'input': line, 'guess': med, 'score': 100, 'method': 'Direct prefix (2-letter)'})
-                break
-        
-        # If no 2-letter match and we have 3+ characters, try 3-letter prefix
-        if not direct_match and len(clean_line) >= 3:
-            for med in MEDICINE_LIST:
-                med_lower = med.lower()
-                if med_lower.startswith(prefix3):
-                    direct_match = med
-                    print(f"[DEBUG] Direct prefix matched '{line}' to '{med}' (3-letter)")
-                    guessed_medicines.append({'input': line, 'guess': med, 'score': 100, 'method': 'Direct prefix (3-letter)'})
-                    break
-                
-        if not direct_match:
-            # Try fuzzy matching with partial ratio for better OCR text recognition
-            from rapidfuzz import fuzz
-            best_match = None
-            best_score = 0
-            for med in MEDICINE_LIST:
-                # Use partial ratio which is better for partial text matches
-                score = fuzz.partial_ratio(clean_line, med.lower())
-                if score > best_score and score >= 60:  # Lower threshold for partial matches
-                    best_score = score
-                    best_match = med
-            
-            if best_match:
-                print(f"[DEBUG] Partial fuzzy matched '{line}' to '{best_match}' with score {best_score}")
-                guessed_medicines.append({'input': line, 'guess': best_match, 'score': best_score, 'method': 'Partial Fuzzy'})
+            score = fuzz.partial_ratio(clean_line, med.lower())
+            if score > best_score and score >= 60:
+                best_score = score
+                best_match = med
+        if best_match:
+            print(f"[DEBUG] Partial fuzzy matched '{line}' to '{best_match}' with score {best_score}")
+            guessed_medicines.append({'input': line, 'guess': best_match, 'score': best_score, 'method': 'Partial Fuzzy'})
+        else:
+            result = fuzzy_process.extractOne(clean_line, MEDICINE_LIST, score_cutoff=40)
+            if result:
+                match, score, _ = result
+                print(f"[DEBUG] Fuzzy matched '{line}' to '{match}' with score {score}")
+                guessed_medicines.append({'input': line, 'guess': match, 'score': score, 'method': 'Fuzzy'})
             else:
-                # Fallback to regular fuzzy matching
-                result = fuzzy_process.extractOne(clean_line, MEDICINE_LIST, score_cutoff=40)
-                if result:
-                    match, score, _ = result
-                    print(f"[DEBUG] Fuzzy matched '{line}' to '{match}' with score {score}")
-                    guessed_medicines.append({'input': line, 'guess': match, 'score': score, 'method': 'Fuzzy'})
-                else:
-                    print(f"[DEBUG] No fuzzy match found for '{line}'")
+                print(f"[DEBUG] No fuzzy match found for '{line}'")
 
     return jsonify({
         'text': extracted_text,
