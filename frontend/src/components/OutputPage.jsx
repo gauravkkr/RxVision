@@ -49,7 +49,7 @@ const OutputPage = () => {
             {guessedMedicines && guessedMedicines.length > 0 ? (
               guessedMedicines.map((item, idx) => (
                 <div key={idx} className="text-green-300 text-3xl font-extrabold mb-2">
-                  {item.guess} (from: "{item.input}" - {item.method})
+                  {item.guess}
                 </div>
               ))
             ) : (
