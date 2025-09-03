@@ -179,7 +179,11 @@ npm run dev
 ---
 
 ## Authors
+<<<<<<< HEAD
 - Team RxVision
+=======
+- Team CapsLock
+>>>>>>> dfc6049f7a37617ef4d3e48b529bd1cb866ed7f4
 
 ---
 
