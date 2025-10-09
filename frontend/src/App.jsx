@@ -13,21 +13,8 @@ import Services from "./components/Services";
 import InputPage from "./components/InputPage.jsx";
 import OutputPage from "./components/OutputPage.jsx";
 
-const LandingPage = () => (
-  <>
-    <div className="pt-[4.75rem] lg:pt-[5.25rem] overflow-hidden">
-      <Header />
-      <Hero />
-      <Benefits />
-      <Collaboration />
-      <Services />
-      <Pricing />
-      <Roadmap />
-      <Footer />
-    </div>
-    <ButtonGradient />
-  </>
-);
+
+const LandingPage = () => <Hero />;
 
 const App = () => {
   return (
