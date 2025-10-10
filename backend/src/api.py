@@ -24,46 +24,56 @@ RESULTS_FOLDER = os.path.join(os.path.dirname(__file__), '../static/results/')
 
 
 def process_image(file):
-    import google.generativeai as genai
-    import PIL.Image
-    # Configure Gemini API (move to top-level in production)
-    genai.configure(api_key="AIzaSyAy6PzooCbZF4ey-Ufa25Tg_YyKN_-9nSE")
-
     filename = secure_filename(file.filename)
     img_path = os.path.join(UPLOAD_FOLDER, filename)
     file.save(img_path)
 
-    image = PIL.Image.open(img_path)
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content(
-        [
-            "You are a medical OCR assistant. "
-            "Analyze the provided image for any text, focusing specifically on handwritten or printed medicine names. "
-            "Strictly cross-reference the recognized text against a comprehensive, real-world medicine database."
-            "If a clear match is found, output the confirmed medicine name."
-            "If the handwriting is ambiguous, use your deep medical knowledge to infer the most likely valid medicine name from the context and letter shapes. Do not guess or hallucinate a non-existent word."
-            "If the handwriting is ambiguous, prioritize the most common letters and letter combinations in medical terminology. For example, 'rine' is a more common ending than 'xim' in a medicine name."
-            "Output ONLY the valid medicine name from real-world medicines (e.g., Paracetamol, Ibuprofen, Amoxicillin, etc.). "
-            "If handwriting is unclear, give the closest valid medicine name, not a made-up word. "
-            "Do not output anything except the medicine name.",
-            image
-        ],
-        generation_config={"temperature": 0.0}
-    )
-
-    medicines = []
-    if response and hasattr(response, "text"):
-        medicines = [line.strip() for line in response.text.split("\n") if line.strip()]
-
-    # Save the image as annotated (for UI compatibility)
-    annotated_image_filename = filename
+    # Call the OCR model to process the image
+    annotated_image, text_output = OCR_Model.predict(img_path)
+    
+    # Save the annotated image
+    annotated_image_filename = 'annotated_' + filename
     annotated_image_path = os.path.join(RESULTS_FOLDER, annotated_image_filename)
-    image.save(annotated_image_path)
+    cv2.imwrite(annotated_image_path, annotated_image)
+    extracted_text = [t[1] for t in text_output]
+    
+    # Save the extracted text to a results file
+    result_txt_path = os.path.join(RESULTS_FOLDER, 'result.txt')
+    with open(result_txt_path, 'w') as result_file:
+        result_file.write("\n".join(extracted_text))
+    
+    # Fuzzy match each extracted text line to medicine names
+    print("[DEBUG] Extracted text:", extracted_text)
+    guessed_medicines = []
+    from rapidfuzz import process as fuzzy_process
+    for line in extracted_text:
+        clean_line = line.lower().strip()
+        if len(clean_line) < 3:
+            continue
+        from rapidfuzz import fuzz
+        best_match = None
+        best_score = 0
+        for med in MEDICINE_LIST:
+            score = fuzz.partial_ratio(clean_line, med.lower())
+            if score > best_score and score >= 60:
+                best_score = score
+                best_match = med
+        if best_match:
+            print(f"[DEBUG] Partial fuzzy matched '{line}' to '{best_match}' with score {best_score}")
+            guessed_medicines.append({'input': line, 'guess': best_match, 'score': best_score, 'method': 'Partial Fuzzy'})
+        else:
+            result = fuzzy_process.extractOne(clean_line, MEDICINE_LIST, score_cutoff=40)
+            if result:
+                match, score, _ = result
+                print(f"[DEBUG] Fuzzy matched '{line}' to '{match}' with score {score}")
+                guessed_medicines.append({'input': line, 'guess': match, 'score': score, 'method': 'Fuzzy'})
+            else:
+                print(f"[DEBUG] No fuzzy match found for '{line}'")
 
     return jsonify({
-        'text': medicines,
+        'text': extracted_text,
         'annotated_image': annotated_image_filename,
-        'guessed_medicines': [{'input': m, 'guess': m, 'score': 100, 'method': 'Gemini'} for m in medicines]
+        'guessed_medicines': guessed_medicines
     })
 
 @api_bp.route('/imageupload', methods=['POST'])
