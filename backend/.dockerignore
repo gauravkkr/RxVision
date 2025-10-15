@@ -1,0 +1,11 @@
+__pycache__
+.venv
+venv
+*.pyc
+*.pyo
+.git
+node_modules
+frontend
+data-science
+*.sqlite3
+*.log

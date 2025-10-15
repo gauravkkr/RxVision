@@ -17,7 +17,8 @@ function ImageUpload() {
     formData.append('file', file);
 
     try {
-      const res = await axios.post('http://localhost:5000/upload', formData, {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8080'
+      const res = await axios.post(`${API_URL}/api/imageupload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -43,7 +44,7 @@ function ImageUpload() {
             ) : (
               <div>
                 <p>{response.message}</p>
-                <a href="http://localhost:5000/download/${response.hdf5_file">
+                <a href={`${API_URL}/download/${response.hdf5_file}`}>
                   Download HDF5 File
                 </a>
               </div>
