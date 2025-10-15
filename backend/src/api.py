@@ -30,73 +30,45 @@ def process_image(file):
 
     # Call the OCR model to process the image
     annotated_image, text_output = OCR_Model.predict(img_path)
-
+    
     # Save the annotated image
     annotated_image_filename = 'annotated_' + filename
     annotated_image_path = os.path.join(RESULTS_FOLDER, annotated_image_filename)
     cv2.imwrite(annotated_image_path, annotated_image)
-
-    # text_output is now a list of (bbox, text, score)
-    extracted_text = []
-    for item in text_output:
-        if len(item) >= 2:
-            extracted_text.append(item[1])
+    extracted_text = [t[1] for t in text_output]
     
     # Save the extracted text to a results file
     result_txt_path = os.path.join(RESULTS_FOLDER, 'result.txt')
-    with open(result_txt_path, 'w', encoding='utf-8') as result_file:
+    with open(result_txt_path, 'w') as result_file:
         result_file.write("\n".join(extracted_text))
     
     # Fuzzy match each extracted text line to medicine names
     print("[DEBUG] Extracted text:", extracted_text)
     guessed_medicines = []
     from rapidfuzz import process as fuzzy_process
-    from rapidfuzz import fuzz
-
-    # helper: try direct alias mapping first
-    alias_map = MEDICINE_ALIAS_MAP if 'MEDICINE_ALIAS_MAP' in globals() else {}
-
     for line in extracted_text:
-        raw = line or ''
-        clean_line = raw.lower().strip()
-        if len(clean_line) < 2:
+        clean_line = line.lower().strip()
+        if len(clean_line) < 3:
             continue
-
-        # check alias map exact
-        if clean_line in alias_map:
-            guess = alias_map[clean_line]
-            guessed_medicines.append({'input': raw, 'guess': guess, 'score': 100, 'method': 'Alias'})
-            continue
-
-        # 1) exact or substring match (fast)
-        substring_matches = [m for m in MEDICINE_LIST if clean_line in m.lower() or m.lower() in clean_line]
-        if substring_matches:
-            guessed_medicines.append({'input': raw, 'guess': substring_matches[0], 'score': 95, 'method': 'Substring'})
-            continue
-
-        # 2) partial ratio across list, keep threshold lower for short strings
+        from rapidfuzz import fuzz
         best_match = None
         best_score = 0
-        score_threshold = 60 if len(clean_line) >= 5 else 45
         for med in MEDICINE_LIST:
             score = fuzz.partial_ratio(clean_line, med.lower())
-            if score > best_score:
+            if score > best_score and score >= 60:
                 best_score = score
                 best_match = med
-
-        if best_score >= score_threshold:
-            print(f"[DEBUG] Partial fuzzy matched '{raw}' to '{best_match}' with score {best_score}")
-            guessed_medicines.append({'input': raw, 'guess': best_match, 'score': best_score, 'method': 'Partial Fuzzy'})
-            continue
-
-        # 3) fallback to full fuzzy extractOne
-        result = fuzzy_process.extractOne(clean_line, MEDICINE_LIST, score_cutoff=40)
-        if result:
-            match, score, _ = result
-            print(f"[DEBUG] Fuzzy matched '{raw}' to '{match}' with score {score}")
-            guessed_medicines.append({'input': raw, 'guess': match, 'score': score, 'method': 'Fuzzy'})
+        if best_match:
+            print(f"[DEBUG] Partial fuzzy matched '{line}' to '{best_match}' with score {best_score}")
+            guessed_medicines.append({'input': line, 'guess': best_match, 'score': best_score, 'method': 'Partial Fuzzy'})
         else:
-            print(f"[DEBUG] No fuzzy match found for '{raw}'")
+            result = fuzzy_process.extractOne(clean_line, MEDICINE_LIST, score_cutoff=40)
+            if result:
+                match, score, _ = result
+                print(f"[DEBUG] Fuzzy matched '{line}' to '{match}' with score {score}")
+                guessed_medicines.append({'input': line, 'guess': match, 'score': score, 'method': 'Fuzzy'})
+            else:
+                print(f"[DEBUG] No fuzzy match found for '{line}'")
 
     return jsonify({
         'text': extracted_text,
